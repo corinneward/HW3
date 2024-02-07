@@ -1,0 +1,115 @@
+---
+title: "HW3"
+output:
+  pdf_document: default
+  html_document: default
+date: "2024-01-30"
+---
+Corinne Ward, cw42962, Github link:
+
+# **Problem 1** 
+```{r, echo = FALSE, message=FALSE}
+creatinine<-read.csv("creatinine.csv")
+library(ggplot2)
+library(tidyverse)
+library(tibble) 
+
+
+```
+
+```{r, echo = FALSE, message=FALSE, results = FALSE}
+
+model_creatinine <-lm(creatclear~age, data=creatinine)
+coef(model_creatinine)
+
+y = -0.62*(55)+147.81
+print(y)
+```
+Question A: 
+
+I would expect the creatinine for a 55 year old to be 113.71. I got this number through finding the regression line which is y = -0.62x + 147.81 where x represents age. When I plugged 55 into x, I got a creatinine rate of 113.7. 
+
+Question B: 
+
+Creatinine decreases at a rate of 0.62 ml/minute per year. I determined this through looking at the slope of the regression line. 
+
+Question C: 
+
+```{r, echo = FALSE, message=FALSE}
+forty = -0.62*(40)+147.81
+sixty = -0.62*(60)+147.81
+forty = forty-135
+sixty = sixty -112
+```
+The expected creatinine rate for a forty year old is 123.01 while the expected creatinine rate for a sixty year old is 110.61. The difference between the actual creatinine rate of the forty year old and the expected rate is 11.99 while the difference between the actual and expected creatinine rate for the sixty year old is 1.39. I determined this through plugging the ages into the regression line and then subtracting the given creatinine rate. 
+
+# **Problem 2**
+
+The "beta" of a stock is the measure of the systemic risk, it measures the percentage change in assets return given a one percent change in the market portfolio. The average systematic risk is 1, so having a beta greater than 1 means that when the market rises the stock for that firm rises more than average however the same effect occurs when the market falls. If the beta of a stock is greater than one, the gain from that stock is very beneficial however the loss that can come from that stock is greater as well. There is a rare occurrence of negative beta which means that the firm will do well when the rest of the market crashes. The return of a negative beta stock is less than the risk  of that stock.
+
+```{r, echo = FALSE, message=FALSE, results=FALSE}
+marketmodel <- read.csv("marketmodel.csv")
+model_apple = lm(AAPL~SPY, data=marketmodel)
+round(coef(model_apple) ,4)
+summary(model_apple)
+model_google = lm(GOOG~SPY, data = marketmodel) 
+round(coef(model_google),4)
+summary(model_google)
+model_merck = lm(MRK~SPY, data = marketmodel)
+round(coef(model_merck),4)
+summary(model_merck)
+model_jj = lm(JNJ~SPY, data=marketmodel)
+round(coef(model_jj),4)
+summary(model_jj)
+model_walmart = lm(WMT~SPY, data = marketmodel)
+round(coef(model_walmart),4)
+summary(model_walmart)
+model_target = lm(TGT~SPY, data = marketmodel)
+round(coef(model_target),4)
+summary(model_target)
+```
+
+```{r, echo = FALSE, message=FALSE}
+Symbol <- c('AAPL','GOOG','MRK','JNJ','WMT','TGT')
+Intercept <- c(0.0092,0.0002,-0.0002,0,0.0007,0.0016)
+Slope <- c(1.0656,0.9968,0.7136,0.6672, 0.5190,0.7076)
+Rsquared<-c(0.0110,0.6475,0.4825,0.5008,0.2836,0.2461)
+
+table <- tibble(Symbol, Intercept, Slope, Rsquared)
+table
+```
+The slope value in this table represents the beta value. This table shows that Walmart has the lowest beta value of 0.5190 therefor Walmart has the lowest systematic risk. Apple has the highest beta valye of 1.0656 therefor Apple has the highest systematic risk. 
+
+# **Problem 3**
+
+```{r, echo = FALSE, message=FALSE}
+covid <- read.csv("covid.csv")
+covid_italy <- covid%>% filter(country == "Italy")
+covid_spain <-covid%>% filter(country == "Spain")
+```
+The average growth rate of daily deaths in Italy is 18.32% and the doubling time is 382 days. 
+```{r, echo = FALSE, message=FALSE, results = FALSE}
+lm_italy = lm(log(deaths) ~ days_since_first_death, data=covid_italy)
+coef(lm_italy)
+italy_doubling <- 70/(.1832)
+```
+The average growth rate of daily deaths in Spain is 27.62% and the doubling time is 253 days. 
+```{r, echo = FALSE, message=FALSE, results = FALSE}
+lm_spain = lm(log(deaths) ~ days_since_first_death, data=covid_spain)
+coef(lm_spain)
+spain_doubling <- 70/(.2762)
+```
+
+
+```{r, echo = FALSE}
+ggplot(covid)+ 
+  geom_line(aes(x=days_since_first_death, y = (deaths), col = country)) +labs(x = "Days since First Death", y = "Number of Deaths", title = "Reported Daily Deaths over Time")
+```
+
+# **Problem 4** 
+```{r,echo = FALSE, message=FALSE, results=FALSE}
+milk <- read.csv("milk.csv")
+lm_milk = lm(log(sales) ~ log(price), data=milk)
+coef(lm_milk)
+```
+The estimated price elasticy of demand for milk is -1.62. I calculated this through applying the power law to the data and fitted a linear model for the log of the x and y values, sales and price. This results in a power law that reveals the estimated elasticity for the demand of milk is -1.62. 
